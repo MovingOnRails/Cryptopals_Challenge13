@@ -76,11 +76,42 @@ struct UserProfile profile_for(char* string){
 unsigned char* encodeUserProfile(struct UserProfile userProfile){
     unsigned char* email = userProfile.email;
     int len = snprintf(NULL, 0, "%ld",userProfile.uid);
-    char* uidString = malloc(len+1);
+    unsigned char* uidString = malloc(len+1);
     snprintf(uidString, len+1, "%ld", userProfile.uid);
+    unsigned char* role = userProfile.role;
     int resultLength = strlen("email=")+strlen(email)+strlen("&uid=")+strlen(uidString)+strlen("&role=")+strlen(userProfile.role);
     unsigned char* result = calloc(resultLength,sizeof(unsigned char));
-    // TODO Concatenate email= with email, &uid= with uid and &role= with role
+    result[0] = 'e';
+    result[1] = 'm';
+    result[2] = 'a';
+    result[3] = 'i';
+    result[4] = 'l';
+    result[5] = '=';
+    for(int i=0;i<strlen(email);i++){
+        result[i+strlen("email=")] = email[i];
+    }
+    int emailEnd = strlen("email=")+strlen(email);
+    result[emailEnd] = '&';
+    result[emailEnd+1] = 'u';
+    result[emailEnd+2] = 'i';
+    result[emailEnd+3] = 'd';
+    result[emailEnd+4] = '=';
+    int uidStart = emailEnd+strlen("&uid=");
+    for(int i=0;i<strlen(uidString);i++){
+        result[uidStart+i] = uidString[i];
+    }
+    int uidEnd = uidStart+strlen(uidString);
+    result[uidEnd] = '&';
+    result[uidEnd+1] = 'r';
+    result[uidEnd+2] = 'o';
+    result[uidEnd+3] = 'l';
+    result[uidEnd+4] = 'e';
+    result[uidEnd+5] = '=';
+    int roleStart = uidEnd + strlen("&role=");
+    for(int i=0;i<strlen(role);i++){
+        result[roleStart+i] = role[i];
+    }
+    return result;
 
 }
 
@@ -104,5 +135,5 @@ int main(){
     printf("role: %s\n",userProfile3.role);
 
     unsigned char* encodedUserProfile = encodeUserProfile(userProfile);
-
+    return 0;
 }
