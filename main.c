@@ -1,25 +1,21 @@
 #include "./profile.c"
+#include "../Challenge10/aes.c"
+#include <sys/random.h>
+
+unsigned char* oracle(unsigned char* message){
+
+}
 
 int main(){
-    struct UserProfile userProfile = parseUserProfile("email=foo@bar.com&uid=10&role=user");
-    printf("------------------UserProfile1------------------\n");
-    printf("email: %s\n",userProfile.email);
-    printf("uid: %d\n",userProfile.uid);
-    printf("role: %s\n",userProfile.role);
+    unsigned char key[16];
+    getrandom(key,16,NULL);
     
-    printf("------------------UserProfile2------------------\n");
-    struct UserProfile userProfile2 = profile_for("foo@bar.com");
-    printf("email: %s\n",userProfile2.email);
-    printf("uid: %d\n",userProfile2.uid);
-    printf("role: %s\n",userProfile2.role);
+    unsigned char craftedEmail[12] = "foo@bar.com\0";
+    struct UserProfile userProfile = profile_for(craftedEmail);
+    unsigned char* message = encodeUserProfile(userProfile);
+    int messageSize = strlen(message);
+    unsigned char* encrypted = aes_ecb_encrypt(message,messageSize,key);
+    unsigned char* decrypted = aes_ecb_decrypt(encrypted,getCiphertextLengthAES128(messageSize),key);
+    printf("%s\n",decrypted);
 
-    printf("------------------UserProfile3------------------\n");
-    struct UserProfile userProfile3 = profile_for("foo@bar.com&role=admin");
-    printf("email: %s\n",userProfile3.email);
-    printf("uid: %d\n",userProfile3.uid);
-    printf("role: %s\n",userProfile3.role);
-
-    unsigned char* encodedUserProfile = encodeUserProfile(userProfile);
-    printf("encoded UserProfile: %s\n", encodedUserProfile);
-    return 0;
 }

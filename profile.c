@@ -55,7 +55,8 @@ struct UserProfile parseUserProfile(unsigned char string[]){
 }
 
 struct UserProfile profile_for(char* string){
-    unsigned char* email = calloc(strlen(string)+1,1);
+    int emailLength = strlen(string);
+    unsigned char* email = calloc(emailLength+1,sizeof(unsigned char));
     int j=0;
     for(int i=0;i<strlen(string);i++){
         if(string[i] == '&' || string[i] == '='){
@@ -80,7 +81,7 @@ unsigned char* encodeUserProfile(struct UserProfile userProfile){
     snprintf(uidString, len+1, "%ld", userProfile.uid);
     unsigned char* role = userProfile.role;
     int resultLength = strlen("email=")+strlen(email)+strlen("&uid=")+strlen(uidString)+strlen("&role=")+strlen(userProfile.role);
-    unsigned char* result = calloc(resultLength,sizeof(unsigned char));
+    unsigned char* result = calloc(resultLength+1,sizeof(unsigned char));
     result[0] = 'e';
     result[1] = 'm';
     result[2] = 'a';
