@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-static long GLOBAL_UID=1;
-
 struct UserProfile {
     unsigned char* email;
     long uid;
@@ -68,8 +66,7 @@ struct UserProfile profile_for(char* string){
     }
     struct UserProfile result;
     result.email = email;
-    result.uid = GLOBAL_UID;
-    GLOBAL_UID++;
+    result.uid = 10;
     result.role="user";
     return result;
 }
